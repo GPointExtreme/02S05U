@@ -10,17 +10,26 @@ import java.time.LocalDateTime;
 public class TimeServer {
 
 	public static void main(String[] args) {
-		try(ServerSocket ss = new ServerSocket(1111)) {
-			Socket s = ss.accept();
-			
-			try(OutputStreamWriter osw = new OutputStreamWriter(s.getOutputStream());
-			BufferedWriter bw = new BufferedWriter(osw)) {
-				bw.write(LocalDateTime.now().toString());
-				bw.flush();
+		int counter = 0;
+		
+		while(true) {
+			try(ServerSocket ss = new ServerSocket(1111)) {
+				Socket s = ss.accept();
+				counter++;
+				if(counter <= 10) {
+					try(OutputStreamWriter osw = new OutputStreamWriter(s.getOutputStream());
+					BufferedWriter bw = new BufferedWriter(osw)) {
+						bw.write("Counter: " + counter + " Uhrzeit: " + LocalDateTime.now().toString());
+						bw.flush();
+					}
+				}
+				else {
+					break;
+				}
 			}
-		}
-		catch(IOException e) {
-			e.printStackTrace();
+			catch(IOException e) {
+				e.printStackTrace();
+			}
 		}
 	}
 }
